@@ -2,13 +2,13 @@
   "envId": "{{env.ENV_ID}}",
   "version": "2.0",
   "framework": {
-    "name": "nodejs-hello-world",
+    "name": "nodejs-socket-server",
     "plugins": {
       "container": {
         "use": "@cloudbase/framework-plugin-container",
         "inputs": {
-          "serviceName": "nodejs-hello-world",
-          "servicePath": "/nodejs-hello-world",
+          "serviceName": "nodejs-socket-server",
+          "servicePath": "/nodejs-socket-server",
           "containerPort": 3001
         }
       }
