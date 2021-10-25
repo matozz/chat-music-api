@@ -50,6 +50,15 @@ io.on("connect", (socket) => {
     }
   });
 
+  socket.on("send-music-room", (info, roomId) => {
+    // console.log(info);
+    if (roomId === null) {
+      socket.broadcast.emit("music-room-info", info);
+    } else {
+      socket.to(roomId).emit("music-room-info", info);
+    }
+  });
+
   const fn1 = _debounce(() => {
     socket.broadcast.emit("receive-typing", false);
   }, 1000);
