@@ -4,7 +4,7 @@ const createRoom = (user) =>
   Object.keys(user).length !== 0 && [
     {
       _id: uuidv4(),
-      text: `${user?.displayName} create the chat. Start chatting!`,
+      text: `${user.displayName} create the chat. Start chatting!`,
       createdAt: new Date(),
       system: true,
     },
@@ -24,7 +24,7 @@ const leaveRoom = (user) =>
   Object.keys(user).length !== 0 && [
     {
       _id: uuidv4(),
-      text: `${user?.displayName} leave the chat.`,
+      text: `${user.displayName} leave the chat.`,
       createdAt: new Date(),
       system: true,
     },
