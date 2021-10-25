@@ -1,31 +1,34 @@
 const { v4: uuidv4 } = require("uuid");
 
-const createRoom = (user) => [
-  {
-    _id: uuidv4(),
-    text: `${user?.displayName} create the chat. Start chatting!`,
-    createdAt: new Date(),
-    system: true,
-  },
-];
+const createRoom = (user) =>
+  Object.keys(user).length !== 0 && [
+    {
+      _id: uuidv4(),
+      text: `${user?.displayName} create the chat. Start chatting!`,
+      createdAt: new Date(),
+      system: true,
+    },
+  ];
 
-const joinRoom = (user) => [
-  {
-    _id: uuidv4(),
-    text: `${user?.displayName} join the chat. Start chatting!`,
-    createdAt: new Date(),
-    system: true,
-  },
-];
+const joinRoom = (user) =>
+  Object.keys(user).length !== 0 && [
+    {
+      _id: uuidv4(),
+      text: `${user.displayName} join the chat. Start chatting!`,
+      createdAt: new Date(),
+      system: true,
+    },
+  ];
 
-const leaveRoom = (user) => [
-  {
-    _id: uuidv4(),
-    text: `${user?.displayName} leave the chat.`,
-    createdAt: new Date(),
-    system: true,
-  },
-];
+const leaveRoom = (user) =>
+  Object.keys(user).length !== 0 && [
+    {
+      _id: uuidv4(),
+      text: `${user?.displayName} leave the chat.`,
+      createdAt: new Date(),
+      system: true,
+    },
+  ];
 
 const privateRoom = () => [
   {
