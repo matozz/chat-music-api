@@ -18,6 +18,7 @@ const io = require("socket.io")(server, {
 });
 
 let PUBLIC_ROOMS = {};
+let PUBLIC_MUSIC_ROOMS = {};
 const port = 3001;
 
 app.get("/", (req, res) => {
@@ -50,12 +51,45 @@ io.on("connect", (socket) => {
     }
   });
 
-  socket.on("send-music-room", (info, roomId) => {
-    // console.log(info);
+  socket.on("send-music-room", (info, roomId, host) => {
+    let room = {
+      info,
+      host,
+    };
     if (roomId === null) {
-      socket.broadcast.emit("music-room-info", info);
+      PUBLIC_MUSIC_ROOMS["_PUBLIC_"] = room;
+      socket.broadcast.emit("music-room-info", room);
     } else {
-      socket.to(roomId).emit("music-room-info", info);
+      PUBLIC_MUSIC_ROOMS[roomId] = room;
+      socket.to(roomId).emit("music-room-info", room);
+    }
+    // console.log(PUBLIC_MUSIC_ROOMS);
+  });
+
+  socket.on("leave-music-room", (roomId) => {
+    let room = { info: {}, host: "" };
+    if (roomId === null) {
+      PUBLIC_MUSIC_ROOMS["_PUBLIC_"] = null;
+      socket.broadcast.emit("music-room-info", room);
+    } else {
+      PUBLIC_MUSIC_ROOMS[roomId] = null;
+      socket.to(roomId).emit("music-room-info", room);
+    }
+    // console.log(PUBLIC_MUSIC_ROOMS);
+  });
+
+  socket.on("get-music-room", (roomId, cb) => {
+    cb(
+      PUBLIC_MUSIC_ROOMS[roomId ? roomId : "_PUBLIC_"] || { info: {}, host: "" }
+    );
+  });
+
+  socket.on("send-music-note", (note, roomId) => {
+    console.log(note);
+    if (roomId === null) {
+      socket.broadcast.emit("receive-music-note", note);
+    } else {
+      socket.to(roomId).emit("receive-music-note", note);
     }
   });
 
