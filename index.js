@@ -108,12 +108,14 @@ io.on("connect", (socket) => {
     }
   });
 
-  socket.on("join-room", ({ roomId }, user, cb) => {
+  socket.on("join-room", ({ roomId, isNewCreate }, user, cb) => {
     socket.join(roomId);
     let roomSize = io.sockets.adapter.rooms.get(roomId).size;
 
     cb(roomSize);
-    socket.to(roomId).emit("receive-message", joinRoom(user));
+    if (isNewCreate) {
+      socket.to(roomId).emit("receive-message", joinRoom(user));
+    }
 
     socket.to(roomId).emit("room-size", roomSize);
   });

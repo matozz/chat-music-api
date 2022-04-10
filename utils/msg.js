@@ -14,7 +14,7 @@ const joinRoom = (user) =>
   Object.keys(user).length !== 0 && [
     {
       _id: uuidv4(),
-      text: `${user.displayName} join the chat.`,
+      text: `${user.displayName} 加入聊天室！`,
       createdAt: new Date(),
       system: true,
     },
