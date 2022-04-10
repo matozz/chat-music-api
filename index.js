@@ -102,31 +102,20 @@ io.on("connect", (socket) => {
   }, 1000);
 
   socket.on("send-typing", (roomId) => {
-    if (roomId === null) {
-      socket.broadcast.emit("receive-typing", true);
-      fn1();
-    } else {
+    if (roomId) {
       socket.to(roomId).emit("receive-typing", true);
       fn2(roomId);
     }
   });
 
-  socket.on("join-room", ({ roomId, roomName }, user, cb) => {
+  socket.on("join-room", ({ roomId }, user, cb) => {
     socket.join(roomId);
     let roomSize = io.sockets.adapter.rooms.get(roomId).size;
-    if (roomId === socket.id) {
-      socket.to(roomId).emit("receive-message", privateRoom(user));
-      cb(privateRoom(), `${user.displayName}'s Room`, roomSize);
-    } else if (typeof PUBLIC_ROOMS[roomId] === "undefined") {
-      PUBLIC_ROOMS[roomId] = roomName;
-      cb(createRoom(user), roomName, roomSize);
-      socket.to(roomId).emit("receive-message", createRoom(user));
-    } else {
-      cb(joinRoom(user), PUBLIC_ROOMS[roomId], roomSize);
-      socket.to(roomId).emit("receive-message", joinRoom(user));
-    }
+
+    cb(roomSize);
+    socket.to(roomId).emit("receive-message", joinRoom(user));
+
     socket.to(roomId).emit("room-size", roomSize);
-    // console.log(PUBLIC_ROOMS);
   });
 
   socket.on("join-public-room", (cb) => {
