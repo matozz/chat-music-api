@@ -24,7 +24,7 @@ const leaveRoom = (user) =>
   Object.keys(user).length !== 0 && [
     {
       _id: uuidv4(),
-      text: `${user.displayName} leave the chat.`,
+      text: `${user.displayName} 离开聊天室！`,
       createdAt: new Date(),
       system: true,
     },

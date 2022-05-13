@@ -51,6 +51,10 @@ io.on("connect", (socket) => {
     }
   });
 
+  socket.on("update-music-room", (roomId, musicMode, musicInfo) => {
+    socket.to(roomId).emit("receive-music-room", { musicMode, musicInfo });
+  });
+
   socket.on("send-music-room", (info, roomId, host) => {
     let room = {
       info,
@@ -85,7 +89,6 @@ io.on("connect", (socket) => {
   });
 
   socket.on("send-music-note", (note, roomId) => {
-    console.log(note);
     if (roomId === null) {
       socket.broadcast.emit("receive-music-note", note);
     } else {
@@ -110,13 +113,13 @@ io.on("connect", (socket) => {
 
   socket.on("join-room", ({ roomId, isNewCreate }, user, cb) => {
     socket.join(roomId);
-    let roomSize = io.sockets.adapter.rooms.get(roomId).size;
+    let roomSize = io.sockets.adapter.rooms.get(roomId).size || 0;
 
     cb(roomSize);
     if (isNewCreate) {
       socket.to(roomId).emit("receive-message", joinRoom(user));
     }
-
+    socket.to(roomId).emit("force-room-size", roomSize);
     socket.to(roomId).emit("room-size", roomSize);
   });
 
@@ -125,12 +128,18 @@ io.on("connect", (socket) => {
     cb(publicRoom(), "Public Room", roomSize);
   });
 
-  socket.on("leave-room", (roomId, user, cb) => {
+  socket.on("leave-room", (roomId, user) => {
     console.log(`${socket.id} left room: ${roomId}`);
     let roomSize = io.sockets.adapter.rooms.get(roomId).size;
     socket.to(roomId).emit("receive-message", leaveRoom(user));
     socket.to(roomId).emit("room-size", roomSize - 1);
-    cb();
+    socket.to(roomId).emit("force-room-size", roomSize - 1);
+    socket.leave(roomId);
+  });
+
+  socket.on("close-room", (roomId) => {
+    console.log(`${socket.id} close room: ${roomId}`);
+    socket.to(roomId).emit("force-room-close");
     socket.leave(roomId);
   });
 
